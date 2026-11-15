@@ -10,7 +10,8 @@ derby.log
 # Se regeneran al ejecutar el proyecto (python main.py)
 data/lake/
 mlruns/
-# La gold (copia de la Práctica 2) SÍ se versiona: es la entrada de la práctica.
+mlflow.db
+# La gold (copia de la Práctica 2, en data/gold/) SÍ se versiona: es la entrada de la práctica.
 # Se excluyen solo los ficheros auxiliares que escribe Spark.
-data/gold/**/*.crc
-data/gold/**/_SUCCESS
+data/**/*.crc
+data/**/_SUCCESS

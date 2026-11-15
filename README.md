@@ -9,7 +9,7 @@ feature store versionado, búsqueda de hiperparámetros con Hyperopt y registro 
     data/gold/                     capa gold de la Práctica 2 (Parquet, solo lectura)
         hecho_cotizacion/  dim_empresa/  dim_fecha/
     data/lake/features/            feature store (Delta + columna version), se genera al ejecutar
-    mlruns/                        historial de MLflow, se genera al ejecutar
+    mlflow.db, mlruns/             historial de MLflow (runs y modelos), se genera al ejecutar
     src/
         controlador/ml_controller.py   un método por ejercicio, separados por clase
         vista/ml_view.py               solo imprime
@@ -24,6 +24,6 @@ feature store versionado, búsqueda de hiperparámetros con Hyperopt y registro 
     python main.py            # todos los ejercicios
     python main.py ej1 ej2    # solo los indicados
 
-Para ver los experimentos en la interfaz de MLflow:
+Para ver los experimentos en la interfaz de MLflow (desde la raíz del proyecto):
 
-    mlflow ui --backend-store-uri mlruns
+    mlflow ui

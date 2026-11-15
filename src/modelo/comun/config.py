@@ -14,9 +14,6 @@ GOLD_DIM_FECHA = (GOLD_DIR / "dim_fecha").as_posix()
 LAKE_DIR = DATA_DIR / "lake"
 FEATURE_STORE = (LAKE_DIR / "features").as_posix()
 
-# --- MLflow: historial de experimentos en local ---
-MLRUNS_DIR = BASE_DIR / "mlruns"
-
 # --- Reproducibilidad ---
 SEED = 42
 
@@ -24,5 +21,9 @@ SEED = 42
 TICKER_BBVA = "BBVA.MC"
 FEATURES_EJ1 = ["Open", "Close"]
 
+# --- Hiperparámetros ---
+VALORES_K_EJ1 = [2, 3, 4, 5, 6, 7, 8]      # k probados a mano en el Ej1
+
 # --- Experimentos de MLflow (uno por algoritmo y dato) ---
-EXPERIMENTO_KMEANS_BBVA = "kmeans_BBVA"
+EXPERIMENTO_EJ1 = "kmeans_BBVA_manual"     # Ej1: k probados a mano (sin Hyperopt)
+EXPERIMENTO_KMEANS_BBVA = "kmeans_BBVA"    # Ej2: búsqueda con Hyperopt
