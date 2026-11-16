@@ -4,11 +4,11 @@ from src.modelo.comun.spark_session import get_spark_session
 from src.modelo.datos import datos_empresa, leer_gold
 from src.modelo.ml.evaluacion import k_codo
 from src.modelo.ml.tuning import buscar_k_hyperopt, probar_valores_k
-from src.modelo.tracking import usar_experimento
+from src.modelo.tracking import runs_ordenadas, usar_experimento
 from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
-EJERCICIOS = ["ej1", "ej2"]
+EJERCICIOS = ["ej1", "ej2", "ej3"]
 
 
 class MLController:
@@ -64,6 +64,14 @@ class MLController:
         k = buscar_k_hyperopt(bbva, config.FEATURES_EJ1, config.K_MIN_EJ2, config.K_MAX_EJ2,
                               config.MAX_EVALS_EJ2, config.SEED)
         self.view.valor("Número de agrupaciones seleccionado por Hyperopt", k)
+
+    def ej3(self):
+        # Ej3 - Herramienta IA usada: Claude
+        self.view.titulo("Ej3")
+        # Todas las runs del experimento del Ej2 (kmeans_BBVA), de mayor a menor silhouette.
+        # Requiere haber ejecutado antes el Ej2 (si no, el experimento no existe).
+        runs = runs_ordenadas(config.EXPERIMENTO_KMEANS_BBVA, "silhouette")
+        self.view.runs(runs, "silhouette")
 
 
 #========================================================================================

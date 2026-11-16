@@ -2,7 +2,7 @@
 from pyspark.ml.evaluation import ClusteringEvaluator
 
 
-# Usado en: Ej2
+# Usado en: Ej1, Ej2
 def silhouette(predicciones):
     """Silhouette de las predicciones: cerca de 1 = clusters bien separados, cerca de 0 = solapados."""
     evaluator = ClusteringEvaluator(featuresCol="features",

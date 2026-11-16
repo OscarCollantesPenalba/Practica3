@@ -5,13 +5,13 @@ import mlflow
 import mlflow.spark
 
 
-# Usado en: Ej1
+# Usado en: Ej1, Ej2
 def usar_experimento(experimento):
     """Crea el experimento si no existe y lo deja activo para las siguientes runs."""
     mlflow.set_experiment(experimento)
 
 
-# Usado en: Ej1
+# Usado en: Ej1, Ej2
 def registrar_run(parametros, metricas, modelo):
     """Crea una run en el experimento activo con sus parámetros, métricas y el modelo entrenado."""
     with mlflow.start_run() as run:
@@ -21,3 +21,13 @@ def registrar_run(parametros, metricas, modelo):
             mlflow.log_metric(nombre, valor)
         mlflow.spark.log_model(modelo, "modelo")
     return run.info.run_id
+
+
+# Usado en: Ej3
+def runs_ordenadas(experimento, metrica, ascendente=False):
+    """Recupera todas las runs de un experimento ordenadas por una métrica.
+    Devuelve un DataFrame de pandas con columnas run_id, params.<nombre>, metrics.<nombre>...
+    ascendente=False: de mayor a menor (silhouette); True: de menor a mayor (SSE)."""
+    experiment = mlflow.get_experiment_by_name(experimento)
+    runs_df = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+    return runs_df.sort_values(by=f"metrics.{metrica}", ascending=ascendente)
