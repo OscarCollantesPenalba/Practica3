@@ -19,10 +19,25 @@ class MLView:
     def seccion(self, texto):
         print(f"----- {texto} -----")
 
-    def runs(self, runs_df, metrica):
-        """Imprime cada run: id, parámetros almacenados y valor de la métrica."""
+    def run(self, row, metrica):
+        """Imprime una run: id, parámetros almacenados y valor de la métrica."""
         # Orden alfabético: MLflow no conserva el orden en que se registraron los parámetros.
-        columnas_params = sorted(c for c in runs_df.columns if c.startswith("params."))
+        columnas_params = sorted(c for c in row.index if c.startswith("params."))
+        params = ", ".join(f"{c.replace('params.', '')}: {row[c]}" for c in columnas_params)
+        print(f"Run ID: {row['run_id']}, {params}, {metrica}: {row[f'metrics.{metrica}']}")
+
+    def runs(self, runs_df, metrica):
+        """Imprime todas las runs de un DataFrame de MLflow."""
         for _, row in runs_df.iterrows():
-            params = ", ".join(f"{c.replace('params.', '')}: {row[c]}" for c in columnas_params)
-            print(f"Run ID: {row['run_id']}, {params}, {metrica}: {row[f'metrics.{metrica}']}")
+            self.run(row, metrica)
+
+    def mejores_runs(self, mejores, metrica):
+        """Imprime la lista de experimentos y la mejor run de cada uno."""
+        self.valor("Experimentos disponibles", ", ".join(nombre for nombre, _ in mejores))
+        for nombre, mejor in mejores:
+            print(f"Experimento {nombre}:")
+            if mejor is None:
+                print("  (sin runs)")
+            else:
+                print("  ", end="")
+                self.run(mejor, metrica)

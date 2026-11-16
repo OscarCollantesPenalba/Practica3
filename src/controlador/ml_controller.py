@@ -5,11 +5,11 @@ from src.modelo.datos import datos_empresa, leer_gold
 from src.modelo.feature_store import guardar_version, leer_version
 from src.modelo.ml.evaluacion import dias_con_distinto_cluster, k_codo, silhouette
 from src.modelo.ml.tuning import buscar_k_hyperopt, entrenar_kmeans, probar_valores_k
-from src.modelo.tracking import runs_ordenadas, usar_experimento
+from src.modelo.tracking import mejores_runs, runs_ordenadas, usar_experimento
 from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
-EJERCICIOS = ["ej1", "ej2", "ej3", "ej4"]
+EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5"]
 
 
 class MLController:
@@ -94,6 +94,27 @@ class MLController:
         # columnas) aunque la gold cambie o se recalcule mañana; la seed fija elimina el azar de
         # KMeans. Con las dos cosas, reentrenar sobre la versión 1 da la misma silhouette y cada
         # día cae en el mismo cluster (0 diferencias), así un modelo se puede recrear y auditar.
+
+    def ej5(self):
+        # Ej5 (opcional) - Herramienta IA usada: Claude
+        self.view.titulo("Ej5")
+        # Misma búsqueda que en el Ej2 (KMeans + Hyperopt + silhouette) pero con otras columnas de
+        # BBVA: variación diaria y rango intradía (%), que describen cómo se movió cada día en vez
+        # de su nivel de precio. Se guarda en un experimento distinto.
+        hecho = leer_gold(self.spark, config.GOLD_HECHO)
+        bbva_variacion = datos_empresa(hecho, config.TICKER_BBVA, config.FEATURES_EJ5)
+        usar_experimento(config.EXPERIMENTO_EJ5)
+        buscar_k_hyperopt(bbva_variacion, config.FEATURES_EJ5, config.K_MIN_EJ2, config.K_MAX_EJ2,
+                          config.MAX_EVALS_EJ2, config.SEED)
+        # Lista de experimentos y mejor run de cada uno (mayor silhouette).
+        self.view.mejores_runs(mejores_runs("silhouette"), "silhouette")
+        self.view.mensaje(
+            "Comentario: cada experimento agrupa las runs de un mismo problema (mismo algoritmo y "
+            "mismos datos), así sus métricas son comparables entre sí y el mejor k de cada uno se "
+            "elige sin mezclarse con los demás. Al separar los datos en experimentos distintos se "
+            "puede comparar el mismo KMeans sobre Open/Close y sobre variación/rango: cada uno tiene "
+            "su propio historial y su mejor run, y se ve que con otros datos cambian el k elegido y "
+            "la calidad de la agrupación.")
 
 
 #========================================================================================

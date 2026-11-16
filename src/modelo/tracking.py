@@ -5,13 +5,13 @@ import mlflow
 import mlflow.spark
 
 
-# Usado en: Ej1, Ej2
+# Usado en: Ej1, Ej2, Ej5
 def usar_experimento(experimento):
     """Crea el experimento si no existe y lo deja activo para las siguientes runs."""
     mlflow.set_experiment(experimento)
 
 
-# Usado en: Ej1, Ej2
+# Usado en: Ej1, Ej2, Ej5
 def registrar_run(parametros, metricas, modelo):
     """Crea una run en el experimento activo con sus parámetros, métricas y el modelo entrenado."""
     with mlflow.start_run() as run:
@@ -31,3 +31,18 @@ def runs_ordenadas(experimento, metrica, ascendente=False):
     experiment = mlflow.get_experiment_by_name(experimento)
     runs_df = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
     return runs_df.sort_values(by=f"metrics.{metrica}", ascending=ascendente)
+
+
+# Usado en: Ej5
+def mejores_runs(metrica):
+    """Lista los experimentos disponibles y, para cada uno, su mejor run según la métrica.
+    Devuelve [(nombre_experimento, fila_mejor_run o None si el experimento no tiene runs)]."""
+    resultado = []
+    for experimento in mlflow.search_experiments(order_by=["creation_time ASC"]):
+        runs_df = mlflow.search_runs(experiment_ids=[experimento.experiment_id])
+        if runs_df.empty:   # p. ej. el experimento "Default" que MLflow crea solo
+            resultado.append((experimento.name, None))
+        else:
+            mejor = runs_df.sort_values(by=f"metrics.{metrica}", ascending=False).iloc[0]
+            resultado.append((experimento.name, mejor))
+    return resultado

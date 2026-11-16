@@ -28,7 +28,7 @@ def probar_valores_k(datos, columnas, valores_k, seed):
     return valores_sse
 
 
-# Usado en: Ej2
+# Usado en: Ej2, Ej5
 def crear_objetivo_kmeans(datos, columnas, seed):
     """Devuelve la función objetivo que Hyperopt llama en cada intento.
     Cada llamada entrena un KMeans con el k propuesto, lo registra como una run de MLflow
@@ -44,7 +44,7 @@ def crear_objetivo_kmeans(datos, columnas, seed):
     return objetivo
 
 
-# Usado en: Ej2
+# Usado en: Ej2, Ej5
 def buscar_k_hyperopt(datos, columnas, k_min, k_max, max_evals, seed):
     """Búsqueda automática del mejor k con Hyperopt (TPE) y devuelve el k elegido."""
     # Espacio de búsqueda: k entero entre k_min y k_max (quniform con paso 1, ordinal).

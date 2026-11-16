@@ -20,6 +20,7 @@ SEED = 42
 # --- Datos de cada ejercicio ---
 TICKER_BBVA = "BBVA.MC"
 FEATURES_EJ1 = ["Open", "Close"]
+FEATURES_EJ5 = ["Variacion_Diaria_Pct", "Rango_Intradia_Pct"]   # otras columnas de BBVA (Ej5)
 VERSION_FEATURES_EJ4 = 1                       # versión del feature store que se guarda y recupera
 K_EJ4 = 6                                      # k elegido por Hyperopt en el Ej2
 
@@ -31,3 +32,4 @@ MAX_EVALS_EJ2 = 10                             # nº de intentos (runs) de Hyper
 # --- Experimentos de MLflow (uno por algoritmo y dato) ---
 EXPERIMENTO_EJ1 = "kmeans_BBVA_manual"     # Ej1: k probados a mano (sin Hyperopt)
 EXPERIMENTO_KMEANS_BBVA = "kmeans_BBVA"    # Ej2: búsqueda con Hyperopt
+EXPERIMENTO_EJ5 = "kmeans_BBVA_variacion"  # Ej5: misma búsqueda con otras columnas
