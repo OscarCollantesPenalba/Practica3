@@ -1,5 +1,5 @@
 """Búsqueda de hiperparámetros: a mano (Ej1) y con Hyperopt (Ej2)."""
-from src.modelo.ml.evaluacion import silhouette
+from src.modelo.ml.evaluacion import silhouette, sse
 from src.modelo.ml.pipelines import crear_pipeline_kmeans
 from src.modelo.tracking import registrar_run
 
@@ -13,18 +13,13 @@ def entrenar_kmeans(datos, columnas, k, seed):
 
 # Usado en: Ej1
 def probar_valores_k(datos, columnas, valores_k, seed):
-    """Entrena un KMeans por cada k, lo registra como una run de MLflow y devuelve [(k, silhouette)]."""
-    resultados = []
+    """Entrena un KMeans por cada k y lo registra como una run de MLflow con su SSE y su silhouette.
+    Devuelve la lista de SSE en el mismo orden que valores_k (para el método del codo)."""
+    valores_sse = []
     for k in valores_k:
         modelo, predicciones = entrenar_kmeans(datos, columnas, k, seed)
-        valor = silhouette(predicciones)
+        valor_sse = sse(modelo)
         registrar_run({"k": k, "seed": seed, "features": ",".join(columnas)},
-                      {"silhouette": valor}, modelo)
-        resultados.append((k, valor))
-    return resultados
-
-
-# Usado en: Ej1
-def mejor_k(resultados):
-    """k con la mayor silhouette."""
-    return max(resultados, key=lambda r: r[1])[0]
+                      {"sse": valor_sse, "silhouette": silhouette(predicciones)}, modelo)
+        valores_sse.append(valor_sse)
+    return valores_sse

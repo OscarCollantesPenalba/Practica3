@@ -22,7 +22,7 @@ TICKER_BBVA = "BBVA.MC"
 FEATURES_EJ1 = ["Open", "Close"]
 
 # --- Hiperparámetros ---
-VALORES_K_EJ1 = [2, 3, 4, 5, 6, 7, 8]      # k probados a mano en el Ej1
+VALORES_K_EJ1 = [2, 3, 4, 5, 6, 7, 8, 9, 10]   # k probados a mano en el Ej1 (curva del codo)
 
 # --- Experimentos de MLflow (uno por algoritmo y dato) ---
 EXPERIMENTO_EJ1 = "kmeans_BBVA_manual"     # Ej1: k probados a mano (sin Hyperopt)
