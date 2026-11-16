@@ -4,7 +4,7 @@ from pyspark.ml.clustering import KMeans
 from pyspark.ml.feature import VectorAssembler
 
 
-# Usado en: Ej1, Ej2
+# Usado en: Ej1, Ej2, Ej4
 def crear_pipeline_kmeans(columnas, k, seed):
     """Pipeline VectorAssembler (Transformer) -> KMeans (Estimator).
     - VectorAssembler junta las columnas en el vector "features" que necesita MLlib.

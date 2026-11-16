@@ -2,13 +2,14 @@ from src.modelo.comun import config
 from src.modelo.comun.semillas import fijar_semillas
 from src.modelo.comun.spark_session import get_spark_session
 from src.modelo.datos import datos_empresa, leer_gold
-from src.modelo.ml.evaluacion import k_codo
-from src.modelo.ml.tuning import buscar_k_hyperopt, probar_valores_k
+from src.modelo.feature_store import guardar_version, leer_version
+from src.modelo.ml.evaluacion import dias_con_distinto_cluster, k_codo, silhouette
+from src.modelo.ml.tuning import buscar_k_hyperopt, entrenar_kmeans, probar_valores_k
 from src.modelo.tracking import runs_ordenadas, usar_experimento
 from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
-EJERCICIOS = ["ej1", "ej2", "ej3"]
+EJERCICIOS = ["ej1", "ej2", "ej3", "ej4"]
 
 
 class MLController:
@@ -72,6 +73,27 @@ class MLController:
         # Requiere haber ejecutado antes el Ej2 (si no, el experimento no existe).
         runs = runs_ordenadas(config.EXPERIMENTO_KMEANS_BBVA, "silhouette")
         self.view.runs(runs, "silhouette")
+
+    def ej4(self):
+        # Ej4 (opcional) - Herramienta IA usada: Claude
+        self.view.titulo("Ej4")
+        hecho = leer_gold(self.spark, config.GOLD_HECHO)
+        bbva = datos_empresa(hecho, config.TICKER_BBVA, config.FEATURES_EJ1)
+        # Se guardan las features de los ejercicios anteriores (clave Ticker, Fecha + Open, Close)
+        # como versión 1 del feature store y se recuperan desde ahí.
+        guardar_version(self.spark, bbva, config.FEATURE_STORE, config.VERSION_FEATURES_EJ4)
+        features_v1 = leer_version(self.spark, config.FEATURE_STORE, config.VERSION_FEATURES_EJ4)
+        # Se entrena con los datos originales y se reentrena con la versión recuperada (mismo k y seed).
+        _, pred_original = entrenar_kmeans(bbva, config.FEATURES_EJ1, config.K_EJ4, config.SEED)
+        _, pred_v1 = entrenar_kmeans(features_v1, config.FEATURES_EJ1, config.K_EJ4, config.SEED)
+        self.view.valor("Silhouette con los datos originales", silhouette(pred_original))
+        self.view.valor("Silhouette con las features versión 1", silhouette(pred_v1))
+        self.view.valor("Días con distinto cluster", dias_con_distinto_cluster(pred_original, pred_v1))
+        # Por qué favorece la reproducibilidad: el modelo depende de los datos con los que se
+        # entrena, del código y del azar. La versión 1 congela los datos exactos (qué días y qué
+        # columnas) aunque la gold cambie o se recalcule mañana; la seed fija elimina el azar de
+        # KMeans. Con las dos cosas, reentrenar sobre la versión 1 da la misma silhouette y cada
+        # día cae en el mismo cluster (0 diferencias), así un modelo se puede recrear y auditar.
 
 
 #========================================================================================

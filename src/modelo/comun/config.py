@@ -20,6 +20,8 @@ SEED = 42
 # --- Datos de cada ejercicio ---
 TICKER_BBVA = "BBVA.MC"
 FEATURES_EJ1 = ["Open", "Close"]
+VERSION_FEATURES_EJ4 = 1                       # versión del feature store que se guarda y recupera
+K_EJ4 = 6                                      # k elegido por Hyperopt en el Ej2
 
 # --- Hiperparámetros ---
 VALORES_K_EJ1 = [2, 3, 4, 5, 6, 7, 8, 9, 10]   # k probados a mano en el Ej1 (curva del codo)

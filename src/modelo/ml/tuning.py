@@ -7,7 +7,7 @@ from src.modelo.ml.pipelines import crear_pipeline_kmeans
 from src.modelo.tracking import registrar_run
 
 
-# Usado en: Ej1, Ej2
+# Usado en: Ej1, Ej2, Ej4
 def entrenar_kmeans(datos, columnas, k, seed):
     """Entrena el pipeline con un k concreto y devuelve el modelo y sus predicciones."""
     modelo = crear_pipeline_kmeans(columnas, k, seed).fit(datos)
