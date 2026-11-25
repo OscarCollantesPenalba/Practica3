@@ -1,15 +1,16 @@
 from src.modelo.comun import config
 from src.modelo.comun.semillas import fijar_semillas
 from src.modelo.comun.spark_session import get_spark_session
-from src.modelo.datos import datos_empresa, leer_gold
+from src.modelo.datos import datos_empresa, leer_gold, variables_derivadas
 from src.modelo.feature_store import guardar_version, leer_version
+from src.modelo.ml.correlacion import matriz_correlacion
 from src.modelo.ml.evaluacion import dias_con_distinto_cluster, k_codo, silhouette
 from src.modelo.ml.tuning import buscar_k_hyperopt, entrenar_kmeans, probar_valores_k
 from src.modelo.tracking import mejores_runs, runs_ordenadas, usar_experimento
 from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
-EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5"]
+EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5", "ej6"]
 
 
 class MLController:
@@ -120,6 +121,15 @@ class MLController:
 #========================================================================================
 #===================CLASE 2 - Aprendizaje no supervisado (DBSCAN, GMM) ==================
 #========================================================================================
+
+    def ej6(self):
+        # Ej6 - Herramienta IA usada: Claude
+        self.view.titulo("Ej6")
+        # Todas las filas empresa-día de la gold (35 empresas) con Return, RangeLow y RangeOpen.
+        hecho = variables_derivadas(leer_gold(self.spark, config.GOLD_HECHO))
+        matriz = matriz_correlacion(hecho, config.COLUMNAS_CORRELACION_EJ6)
+        self.view.matriz(config.COLUMNAS_CORRELACION_EJ6, matriz)
+        # Comentario y justificación de las variables elegidas: en el informe (pdf).
 
 
 #========================================================================================

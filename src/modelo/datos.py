@@ -15,3 +15,14 @@ def datos_empresa(hecho, ticker, columnas):
     return (hecho.filter(col("Ticker") == ticker)
                  .select(["Ticker", "Fecha"] + columnas)
                  .dropna(subset=columnas))
+
+
+# Usado en: Ej6
+def variables_derivadas(hecho):
+    """Añade las variables derivadas de cada fila empresa-día:
+    Return = (Close - Open) / Open       -> rentabilidad del día (apertura a cierre)
+    RangeLow = (High - Low) / Low         -> amplitud del día respecto al mínimo
+    RangeOpen = (High - Low) / Open       -> amplitud del día respecto a la apertura"""
+    return (hecho.withColumn("Return", (col("Close") - col("Open")) / col("Open"))
+                 .withColumn("RangeLow", (col("High") - col("Low")) / col("Low"))
+                 .withColumn("RangeOpen", (col("High") - col("Low")) / col("Open")))

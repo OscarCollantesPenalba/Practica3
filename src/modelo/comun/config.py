@@ -23,6 +23,8 @@ FEATURES_EJ1 = ["Open", "Close"]
 FEATURES_EJ5 = ["Variacion_Diaria_Pct", "Rango_Intradia_Pct"]   # otras columnas de BBVA (Ej5)
 VERSION_FEATURES_EJ4 = 1                       # versión del feature store que se guarda y recupera
 K_EJ4 = 6                                      # k elegido por Hyperopt en el Ej2
+COLUMNAS_CORRELACION_EJ6 = ["Open", "High", "Low", "Close", "Volume",
+                            "Return", "RangeLow", "RangeOpen", "Sentimiento"]
 
 # --- Hiperparámetros ---
 VALORES_K_EJ1 = [2, 3, 4, 5, 6, 7, 8, 9, 10]   # k probados a mano en el Ej1 (curva del codo)

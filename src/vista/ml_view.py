@@ -19,6 +19,13 @@ class MLView:
     def seccion(self, texto):
         print(f"----- {texto} -----")
 
+    def matriz(self, columnas, matriz):
+        """Imprime una matriz cuadrada con el nombre de las columnas en filas y columnas."""
+        ancho = max(len(c) for c in columnas) + 2
+        print(" " * ancho + "".join(f"{c:>{ancho}}" for c in columnas))
+        for nombre, fila in zip(columnas, matriz):
+            print(f"{nombre:<{ancho}}" + "".join(f"{v:>{ancho}.3f}" for v in fila))
+
     def run(self, row, metrica):
         """Imprime una run: id, parámetros almacenados y valor de la métrica."""
         # Orden alfabético: MLflow no conserva el orden en que se registraron los parámetros.
