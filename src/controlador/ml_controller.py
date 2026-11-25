@@ -1,7 +1,8 @@
 from src.modelo.comun import config
 from src.modelo.comun.semillas import fijar_semillas
 from src.modelo.comun.spark_session import get_spark_session
-from src.modelo.datos import datos_empresa, leer_gold, variables_derivadas
+from src.modelo.datos import (datos_empresa, leer_gold, sector_mes, sentimiento_mes_anterior,
+                              variables_derivadas)
 from src.modelo.feature_store import guardar_version, leer_version
 from src.modelo.ml.correlacion import correlacion, matriz_correlacion
 from src.modelo.ml.evaluacion import dias_con_distinto_cluster, k_codo, silhouette
@@ -10,9 +11,9 @@ from src.modelo.tracking import mejores_runs, runs_ordenadas, usar_experimento
 from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
-EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5", "ej6", "ej7"]
+EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5", "ej6", "ej7", "ej8"]
 
-
+ 
 class MLController:
     """Orquesta los ejercicios: llama a funciones del modelo y pasa los resultados a la vista.
     La lógica vive en src/modelo; aquí solo se encadenan llamadas y se muestran resultados."""
@@ -139,6 +140,22 @@ class MLController:
         r = correlacion(hecho, "Sentimiento", "Return")
         self.view.valor("Correlación diaria entre Sentimiento y Return", r)
         # Comentario sobre la relación entre sentimiento del sector y retorno del día: en el informe (pdf).
+
+    def ej8(self):
+        # Ej8 - Herramienta IA usada: Claude
+        self.view.titulo("Ej8")
+        # Tabla con una fila por sector y mes (RetMedioMes, SentMedioMes).
+        hecho = variables_derivadas(leer_gold(self.spark, config.GOLD_HECHO))
+        empresas = leer_gold(self.spark, config.GOLD_DIM_EMPRESA)
+        fechas = leer_gold(self.spark, config.GOLD_DIM_FECHA)
+        tabla = sentimiento_mes_anterior(sector_mes(hecho, empresas, fechas))
+        # Mismo mes: ¿coinciden sentimiento y retorno? (comparar con la diaria del Ej7)
+        self.view.valor("Correlación entre SentMedioMes y RetMedioMes (mismo mes)",
+                        correlacion(tabla, "SentMedioMes", "RetMedioMes"))
+        # Mes siguiente: ¿el sentimiento de un mes predice el retorno del siguiente?
+        self.view.valor("Correlación entre el SentMedioMes de un mes y el RetMedioMes del siguiente",
+                        correlacion(tabla, "SentMesAnterior", "RetMedioMes"))
+        # Comentario (predice o coincide en el mismo mes): en el informe (pdf).
 
 
 #========================================================================================

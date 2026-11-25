@@ -14,7 +14,7 @@ def matriz_correlacion(df, columnas):
     return Correlation.corr(vec, "features").head()[0].toArray()
 
 
-# Usado en: Ej7
+# Usado en: Ej7, Ej8
 def correlacion(df, columna_a, columna_b):
     """Coeficiente de Pearson entre dos columnas, quitando antes las filas con nulos en ellas."""
     return df.dropna(subset=[columna_a, columna_b]).stat.corr(columna_a, columna_b)
