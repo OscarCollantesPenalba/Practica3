@@ -3,15 +3,15 @@ from src.modelo.comun.semillas import fijar_semillas
 from src.modelo.comun.spark_session import get_spark_session
 from src.modelo.datos import datos_empresa, leer_gold, variables_derivadas
 from src.modelo.feature_store import guardar_version, leer_version
-from src.modelo.ml.correlacion import matriz_correlacion
+from src.modelo.ml.correlacion import correlacion, matriz_correlacion
 from src.modelo.ml.evaluacion import dias_con_distinto_cluster, k_codo, silhouette
 from src.modelo.ml.tuning import buscar_k_hyperopt, entrenar_kmeans, probar_valores_k
 from src.modelo.tracking import mejores_runs, runs_ordenadas, usar_experimento
 from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
-EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5", "ej6"]
-
+EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5", "ej6", "ej7"]
+EJERCICIOS = ["ej7"]
 
 class MLController:
     """Orquesta los ejercicios: llama a funciones del modelo y pasa los resultados a la vista.
@@ -130,6 +130,15 @@ class MLController:
         matriz = matriz_correlacion(hecho, config.COLUMNAS_CORRELACION_EJ6)
         self.view.matriz(config.COLUMNAS_CORRELACION_EJ6, matriz)
         # Comentario y justificación de las variables elegidas: en el informe (pdf).
+
+    def ej7(self):
+        # Ej7 - Herramienta IA usada: Claude
+        self.view.titulo("Ej7")
+        # Correlación a nivel diario: cada fila empresa-día tal cual, sin agrupar.
+        hecho = variables_derivadas(leer_gold(self.spark, config.GOLD_HECHO))
+        r = correlacion(hecho, "Sentimiento", "Return")
+        self.view.valor("Correlación diaria entre Sentimiento y Return", r)
+        # Comentario sobre la relación entre sentimiento del sector y retorno del día: en el informe (pdf).
 
 
 #========================================================================================

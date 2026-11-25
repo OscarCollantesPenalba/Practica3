@@ -1,8 +1,14 @@
 """MLflow: experimentos, registro de runs y consulta de resultados.
 No se fija la ruta del tracking (set_tracking_uri): MLflow usa su ubicación por defecto
 en la carpeta desde la que se ejecuta el proyecto."""
+import logging
+
 import mlflow
 import mlflow.spark
+
+# Sin los mensajes INFO de MLflow (p. ej. "Experiment ... does not exist. Creating a new
+# experiment"): en "muestra" la consola solo debe enseñar lo pedido. Los avisos (WARNING) siguen.
+logging.getLogger("mlflow").setLevel(logging.WARNING)
 
 
 # Usado en: Ej1, Ej2, Ej5
