@@ -11,7 +11,7 @@ from src.vista.ml_view import MLView
 
 # Ejercicios implementados, en orden de ejecución.
 EJERCICIOS = ["ej1", "ej2", "ej3", "ej4", "ej5", "ej6", "ej7"]
-EJERCICIOS = ["ej7"]
+
 
 class MLController:
     """Orquesta los ejercicios: llama a funciones del modelo y pasa los resultados a la vista.
